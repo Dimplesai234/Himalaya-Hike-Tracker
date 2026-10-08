@@ -2,9 +2,7 @@ package com.himalaya.hiketracker.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
-
 import com.himalaya.hiketracker.entity.Hike;
 import com.himalaya.hiketracker.repository.HikeRepository;
 
@@ -32,15 +30,13 @@ public class HikeServiceImpl implements HikeService {
 
     @Override
     public Hike getHikeById(Long id) {
-    	return hikeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException( "Hike not found with id: " + id));
+    	return hikeRepository.findById(id).orElseThrow(() -> new RuntimeException( "Hike not found with id: " + id));
     }
 
     @Override
     public void deleteHike(Long id) {
     	if (!hikeRepository.existsById(id)) {
-            throw new RuntimeException(
-                    "Hike not found with id: " + id);
+            throw new RuntimeException("Hike not found with id: " + id);
         }
         hikeRepository.deleteById(id);
     }
