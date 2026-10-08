@@ -26,9 +26,7 @@ public class HikeController {
     @PostMapping
     public ResponseEntity<Hike> addHike(@RequestBody Hike hike) {
         Hike savedHike = hikeService.addHike(hike);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(savedHike);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedHike);
     }
 
     @GetMapping
