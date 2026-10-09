@@ -18,7 +18,6 @@ public class HikeServiceImpl implements HikeService {
     public Hike addHike(Hike hike) {
         hike.setDistanceKm(calculateDistance(hike.getStartLatitude(),hike.getStartLongitude(),hike.getEndLatitude(),
                         hike.getEndLongitude()));
-
         hike.setCreatedAt(LocalDateTime.now());
         return hikeRepository.save(hike);
     }
