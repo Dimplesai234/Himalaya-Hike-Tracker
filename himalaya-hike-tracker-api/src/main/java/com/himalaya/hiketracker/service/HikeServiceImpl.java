@@ -61,4 +61,31 @@ public class HikeServiceImpl implements HikeService {
         double c = 2 * Math.atan2(Math.sqrt(a),Math.sqrt(1 - a));
         return Math.round(EARTH_RADIUS_KM * c * 100.0) / 100.0;
     }
+    
+    @Override
+    public Hike updateHike(Long id, Hike hike) {
+        Hike existingHike = hikeRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Hike not found with id: " + id));
+
+        existingHike.setStartLocation(hike.getStartLocation());
+        existingHike.setEndLocation(hike.getEndLocation());
+        existingHike.setStartLatitude(hike.getStartLatitude());
+        existingHike.setStartLongitude(hike.getStartLongitude());
+        existingHike.setEndLatitude(hike.getEndLatitude());
+        existingHike.setEndLongitude(hike.getEndLongitude());
+        existingHike.setHikeDate(hike.getHikeDate());
+
+        double distance = calculateDistance(
+                hike.getStartLatitude(),
+                hike.getStartLongitude(),
+                hike.getEndLatitude(),
+                hike.getEndLongitude()
+        );
+
+        existingHike.setDistanceKm(distance);
+
+        return hikeRepository.save(existingHike);
+    }
+    
 }

@@ -1,9 +1,22 @@
+
 * {
   box-sizing: border-box;
 }
 
+html {
+  min-width: 320px;
+}
+
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f5f7fa;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  background: #f4f7f4;
+  color: #24372c;
+}
+
+button,
+input {
+  font: inherit;
 }

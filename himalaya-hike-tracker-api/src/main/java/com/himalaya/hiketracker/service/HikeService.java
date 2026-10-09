@@ -9,4 +9,5 @@ public interface HikeService {
     Hike getHikeById(Long id);
     void deleteHike(Long id);
     double getTotalDistance();
+	Hike updateHike(Long id, Hike hike);
 }

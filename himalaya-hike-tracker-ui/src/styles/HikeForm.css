@@ -1,0 +1,117 @@
+
+.hike-form {
+  margin: 0 0 28px;
+  padding: 28px;
+  background: #ffffff;
+  border: 1px solid #e0e8e1;
+  border-radius: 14px;
+  box-shadow: 0 5px 18px rgba(30, 65, 43, 0.06);
+}
+
+.hike-form h2 {
+  margin: 0 0 24px;
+  color: #204b35;
+  font-size: 1.6rem;
+}
+
+.hike-form form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 20px;
+}
+
+.hike-form form > div:not(.hike-form-actions) {
+  min-width: 0;
+}
+
+.hike-form label {
+  display: block;
+  margin-bottom: 9px;
+  color: #34483a;
+  font-weight: 600;
+}
+
+.hike-form input {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 12px 14px;
+  border: 1px solid #d4ddd6;
+  border-radius: 7px;
+  background: #ffffff;
+  color: #24372c;
+  font-size: 1rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.hike-form input:focus {
+  outline: none;
+  border-color: #286747;
+  box-shadow: 0 0 0 3px rgba(40, 103, 71, 0.12);
+}
+
+.hike-form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.hike-form-actions button {
+  min-height: 48px;
+  padding: 12px 24px;
+  border: 1px solid #286747;
+  border-radius: 7px;
+  background: #286747;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.hike-form-actions button:hover:not(:disabled) {
+  background: #204f36;
+}
+
+.hike-form-actions button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.hike-form-actions button.cancel-button {
+  border-color: #d4ddd6;
+  background: #ffffff;
+  color: #34483a;
+}
+
+.hike-form-actions button.cancel-button:hover:not(:disabled) {
+  background: #f1f5f2;
+}
+
+.hike-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #c62828;
+}
+
+@media (max-width: 650px) {
+  .hike-form {
+    padding: 20px;
+  }
+
+  .hike-form form {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .hike-form-actions {
+    grid-column: 1;
+    justify-content: stretch;
+  }
+
+  .hike-form-actions button {
+    flex: 1;
+    padding: 12px;
+  }
+}

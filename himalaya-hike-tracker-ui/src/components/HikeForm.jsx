@@ -1,185 +1,295 @@
-import { useState } from "react";
 
-function HikeForm() {
+import { useEffect, useState } from "react";
+import "../styles/HikeForm.css";
 
-    const [formData, setFormData] = useState({
-        startLocation: "",
-        endLocation: "",
-        startLatitude: "",
-        startLongitude: "",
-        endLatitude: "",
-        endLongitude: "",
-        hikeDate: ""
-    });
+const API_URL = "http://localhost:8080/api/hikes";
 
-    const handleChange = (event) => {
+const EMPTY_FORM = {
+  startLocation: "",
+  endLocation: "",
+  startLatitude: "",
+  startLongitude: "",
+  endLatitude: "",
+  endLongitude: "",
+  hikeDate: "",
+};
 
-        const { name, value } = event.target;
+function HikeForm({ hikeToEdit, onHikeAdded, onCancelEdit }) {
+  const [formData, setFormData] = useState({ ...EMPTY_FORM });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-        setFormData({
-            ...formData,
-            [name]: value
-        });
+  const isEditing = Boolean(hikeToEdit);
+
+  useEffect(() => {
+    if (hikeToEdit) {
+      setFormData({
+        startLocation: hikeToEdit.startLocation ?? "",
+        endLocation: hikeToEdit.endLocation ?? "",
+        startLatitude: hikeToEdit.startLatitude ?? "",
+        startLongitude: hikeToEdit.startLongitude ?? "",
+        endLatitude: hikeToEdit.endLatitude ?? "",
+        endLongitude: hikeToEdit.endLongitude ?? "",
+        hikeDate: hikeToEdit.hikeDate ?? "",
+      });
+    } else {
+      setFormData({ ...EMPTY_FORM });
+    }
+
+    setError("");
+  }, [hikeToEdit]);
+
+  function handleChange(event) {
+    const { name, value } = event.target;
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setError("");
+
+    const coordinateFields = [
+      formData.startLatitude,
+      formData.startLongitude,
+      formData.endLatitude,
+      formData.endLongitude,
+    ];
+
+    if (
+      coordinateFields.some(
+        (value) => String(value).trim() === ""
+      )
+    ) {
+      setError("Please enter all four coordinates.");
+      return;
+    }
+
+    const coordinates = coordinateFields.map(Number);
+
+    if (
+      coordinates.some((value) => !Number.isFinite(value)) ||
+      coordinates[0] < -90 ||
+      coordinates[0] > 90 ||
+      coordinates[1] < -180 ||
+      coordinates[1] > 180 ||
+      coordinates[2] < -90 ||
+      coordinates[2] > 90 ||
+      coordinates[3] < -180 ||
+      coordinates[3] > 180
+    ) {
+      setError(
+        "Enter valid coordinates: latitude must be between -90 and 90, and longitude between -180 and 180."
+      );
+      return;
+    }
+
+    const hikeData = {
+      startLocation: formData.startLocation.trim(),
+      endLocation: formData.endLocation.trim(),
+      startLatitude: coordinates[0],
+      startLongitude: coordinates[1],
+      endLatitude: coordinates[2],
+      endLongitude: coordinates[3],
+      hikeDate: formData.hikeDate || null,
     };
 
-    const handleSubmit = async (event) => {
+    if (!hikeData.startLocation || !hikeData.endLocation) {
+      setError("Start location and end location are required.");
+      return;
+    }
 
-        event.preventDefault();
+    setSubmitting(true);
 
-        const hikeData = {
-            startLocation: formData.startLocation,
-            endLocation: formData.endLocation,
-            startLatitude: Number(formData.startLatitude),
-            startLongitude: Number(formData.startLongitude),
-            endLatitude: Number(formData.endLatitude),
-            endLongitude: Number(formData.endLongitude),
-            hikeDate: formData.hikeDate
-        };
+    try {
+      const url = isEditing
+        ? `${API_URL}/${hikeToEdit.id}`
+        : API_URL;
 
-        console.log("Hike data:", hikeData);
+      const response = await fetch(url, {
+        method: isEditing ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(hikeData),
+      });
 
-        try {
+      if (!response.ok) {
+        const message = await response.text();
+        throw new Error(
+          message || `Unable to ${isEditing ? "update" : "add"} hike.`
+        );
+      }
 
-            const response = await fetch(
-                "http://localhost:8080/api/hikes",
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(hikeData)
-                }
-            );
+      setFormData({ ...EMPTY_FORM });
 
-            if (!response.ok) {
-                throw new Error("Failed to add hike");
-            }
+      // Refresh data and return to the View Hikes tab.
+      if (onHikeAdded) {
+        onHikeAdded();
+      }
 
-            const savedHike = await response.json();
+      window.alert(
+        isEditing
+          ? "Hike updated successfully!"
+          : "Hike added successfully!"
+      );
+    } catch (err) {
+      console.error("Error saving hike:", err);
+      setError(
+        err.message || "Unable to save hike. Please try again."
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
-            console.log("Hike saved successfully:", savedHike);
+  function handleCancel() {
+    setFormData({ ...EMPTY_FORM });
+    setError("");
 
-            alert("Hike added successfully!");
+    if (onCancelEdit) {
+      onCancelEdit();
+    }
+  }
 
-            setFormData({
-                startLocation: "",
-                endLocation: "",
-                startLatitude: "",
-                startLongitude: "",
-                endLatitude: "",
-                endLongitude: "",
-                hikeDate: ""
-            });
+  return (
+    <section className="hike-form">
+      <h2>{isEditing ? "Edit Hike" : "Add New Hike"}</h2>
 
-        } catch (error) {
-
-            console.error("Error adding hike:", error);
-
-            alert("Failed to add hike. Please check whether the backend is running.");
-        }
-    };
-
-    return (
+      <form onSubmit={handleSubmit}>
         <div>
-
-            <h2>Add New Hike</h2>
-
-            <form onSubmit={handleSubmit}>
-
-                <div>
-                    <label>Start Location</label>
-                    <input
-                        type="text"
-                        name="startLocation"
-                        value={formData.startLocation}
-                        onChange={handleChange}
-                        placeholder="e.g. Manali"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>End Location</label>
-                    <input
-                        type="text"
-                        name="endLocation"
-                        value={formData.endLocation}
-                        onChange={handleChange}
-                        placeholder="e.g. Rohtang Pass"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>Start Latitude</label>
-                    <input
-                        type="number"
-                        name="startLatitude"
-                        value={formData.startLatitude}
-                        onChange={handleChange}
-                        step="any"
-                        placeholder="e.g. 32.2396"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>Start Longitude</label>
-                    <input
-                        type="number"
-                        name="startLongitude"
-                        value={formData.startLongitude}
-                        onChange={handleChange}
-                        step="any"
-                        placeholder="e.g. 77.1887"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>End Latitude</label>
-                    <input
-                        type="number"
-                        name="endLatitude"
-                        value={formData.endLatitude}
-                        onChange={handleChange}
-                        step="any"
-                        placeholder="e.g. 32.3656"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>End Longitude</label>
-                    <input
-                        type="number"
-                        name="endLongitude"
-                        value={formData.endLongitude}
-                        onChange={handleChange}
-                        step="any"
-                        placeholder="e.g. 77.2495"
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>Hike Date</label>
-                    <input
-                        type="date"
-                        name="hikeDate"
-                        value={formData.hikeDate}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <button type="submit">
-                    Add Hike
-                </button>
-
-            </form>
-
+          <label htmlFor="startLocation">Start Location</label>
+          <input
+            id="startLocation"
+            name="startLocation"
+            type="text"
+            value={formData.startLocation}
+            onChange={handleChange}
+            placeholder="e.g. Manali"
+            required
+          />
         </div>
-    );
+
+        <div>
+          <label htmlFor="endLocation">End Location</label>
+          <input
+            id="endLocation"
+            name="endLocation"
+            type="text"
+            value={formData.endLocation}
+            onChange={handleChange}
+            placeholder="e.g. Rohtang Pass"
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="startLatitude">Start Latitude</label>
+          <input
+            id="startLatitude"
+            name="startLatitude"
+            type="number"
+            step="any"
+            min="-90"
+            max="90"
+            value={formData.startLatitude}
+            onChange={handleChange}
+            placeholder="e.g. 32.2396"
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="startLongitude">Start Longitude</label>
+          <input
+            id="startLongitude"
+            name="startLongitude"
+            type="number"
+            step="any"
+            min="-180"
+            max="180"
+            value={formData.startLongitude}
+            onChange={handleChange}
+            placeholder="e.g. 77.1887"
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="endLatitude">End Latitude</label>
+          <input
+            id="endLatitude"
+            name="endLatitude"
+            type="number"
+            step="any"
+            min="-90"
+            max="90"
+            value={formData.endLatitude}
+            onChange={handleChange}
+            placeholder="e.g. 32.3716"
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="endLongitude">End Longitude</label>
+          <input
+            id="endLongitude"
+            name="endLongitude"
+            type="number"
+            step="any"
+            min="-180"
+            max="180"
+            value={formData.endLongitude}
+            onChange={handleChange}
+            placeholder="e.g. 77.2465"
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor="hikeDate">Hike Date (Optional)</label>
+          <input
+            id="hikeDate"
+            name="hikeDate"
+            type="date"
+            value={formData.hikeDate}
+            onChange={handleChange}
+          />
+        </div>
+
+        {error && (
+          <p className="hike-error" role="alert">
+            {error}
+          </p>
+        )}
+
+        <div className="hike-form-actions">
+          <button type="submit" disabled={submitting}>
+            {submitting
+              ? "Saving..."
+              : isEditing
+                ? "Update Hike"
+                : "Add Hike"}
+          </button>
+
+          {isEditing && (
+            <button
+              type="button"
+              className="cancel-button"
+              onClick={handleCancel}
+              disabled={submitting}
+            >
+              Cancel
+            </button>
+          )}
+        </div>
+      </form>
+    </section>
+  );
 }
 
 export default HikeForm;
