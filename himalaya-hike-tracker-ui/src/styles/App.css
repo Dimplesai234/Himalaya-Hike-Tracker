@@ -1,85 +1,168 @@
 
-#root {
-  width: 100%;
-  min-height: 100vh;
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f3f7f3;
+  color: #203b2d;
 }
 
 .app {
-  width: min(100% - 40px, 1100px);
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 32px 0 56px;
+  padding: 24px 32px;
 }
 
+/* Header */
 .app-header {
+  padding: 30px;
   margin-bottom: 24px;
-  padding: 22px 24px;
-  background: #e8f1ea;
-  border-radius: 12px;
+  background-color: #e5f1e8;
+  border-radius: 16px;
 }
 
 .app-header h1 {
-  margin: 0 0 8px;
-  color: #204b35;
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  margin: 0 0 12px;
+  color: #24543d;
+  font-size: clamp(28px, 4vw, 48px);
 }
 
 .app-header p {
   margin: 0;
-  color: #637267;
-  line-height: 1.6;
+  color: #60776a;
+  font-size: 18px;
+  line-height: 1.5;
 }
 
-/* Main navigation */
+/* Full-width toolbar */
+.app .app-toolbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  margin: 20px 0 16px;
+  padding: 0;
+}
+
+/* Logout button */
+.app .app-toolbar .logout-button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 105px;
+  margin: 0 0 0 auto;
+  padding: 11px 24px;
+  background: #245c43;
+  color: #ffffff;
+  border: 1px solid #245c43;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.app .app-toolbar .logout-button:hover {
+  background: #19452f;
+  color: #ffffff;
+  border-color: #19452f;
+}
+
+.app .app-toolbar .logout-button:focus-visible {
+  outline: 3px solid #8dbda0;
+  outline-offset: 3px;
+}
+
+/* Navigation tabs */
 .app-tabs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin: 14px 0 28px;
+  gap: 14px;
+  margin-bottom: 34px;
 }
 
 .app-tabs button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 84px;
-  padding: 18px;
-  border: 1px solid #dce5de;
-  border-radius: 10px;
-  background: #fff;
-  color: #24372c;
-  font-size: 1rem;
-  font-weight: 650;
+  min-height: 100px;
+  padding: 20px;
+  background: #ffffff;
+  color: #203b2d;
+  border: 1px solid #dce8df;
+  border-radius: 14px;
+  font-size: 17px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.app-tabs button:hover {
+  border-color: #286849;
 }
 
 .app-tabs button.active {
-  background: #286747;
-  border-color: #286747;
-  color: #fff;
+  background: #286849;
+  color: #ffffff;
+  border-color: #286849;
 }
 
-.app-tabs button:hover:not(.active) {
-  background: #edf4ee;
+/* Authentication area */
+.auth-container {
+  width: 100%;
+  padding: 10px 0 30px;
 }
 
-@media (max-width: 600px) {
+/* Responsive layout */
+@media (max-width: 768px) {
   .app {
-    width: calc(100% - 28px);
-    padding-top: 18px;
+    padding: 16px;
   }
 
   .app-header {
-    padding: 18px;
+    padding: 24px 20px;
+  }
+
+  .app-header p {
+    font-size: 16px;
   }
 
   .app-tabs {
-    gap: 8px;
+    gap: 10px;
+    margin-bottom: 24px;
   }
 
   .app-tabs button {
-    min-height: 66px;
-    padding: 12px 8px;
+    min-height: 76px;
+    padding: 14px 8px;
+    font-size: 15px;
+  }
+
+  .app .app-toolbar .logout-button {
+    min-width: 95px;
+    padding: 10px 18px;
   }
 }
 
+@media (max-width: 420px) {
+  .app {
+    padding: 12px;
+  }
+
+  .app-header {
+    padding: 20px 16px;
+  }
+
+  .app-tabs button {
+    font-size: 14px;
+  }
+}

@@ -1,15 +1,37 @@
-
 import { useState } from "react";
 import HikeForm from "./components/HikeForm";
 import HikeList from "./components/HikeList";
 import TotalDistance from "./components/TotalDistance";
 import HikeMap from "./components/HikeMap";
+import Login from "./components/Login";
+import Register from "./components/Register";
 import "./styles/App.css";
+import "./styles/Auth.css";
 
 function App() {
   const [activeTab, setActiveTab] = useState("view");
   const [refreshKey, setRefreshKey] = useState(0);
   const [selectedHike, setSelectedHike] = useState(null);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    () => sessionStorage.getItem("hikeTrackerLoggedIn") === "true"
+  );
+
+  const [showLogin, setShowLogin] = useState(true);
+
+  function handleLoginSuccess() {
+    sessionStorage.setItem("hikeTrackerLoggedIn", "true");
+    setIsLoggedIn(true);
+    setActiveTab("view");
+  }
+
+  function handleLogout() {
+    sessionStorage.removeItem("hikeTrackerLoggedIn");
+    setIsLoggedIn(false);
+    setShowLogin(true);
+    setSelectedHike(null);
+    setActiveTab("view");
+  }
 
   function handleHikeSaved() {
     setRefreshKey((previousKey) => previousKey + 1);
@@ -46,50 +68,76 @@ function App() {
         <p>Your hiking journey, all in one place.</p>
       </header>
 
-      <nav className="app-tabs" aria-label="Main navigation">
-        <button
-          type="button"
-          className={activeTab === "add" ? "active" : ""}
-          aria-pressed={activeTab === "add"}
-          onClick={() => handleTabChange("add")}
-        >
-          {selectedHike ? "Edit Hike" : "Add Hike"}
-        </button>
-
-        <button
-          type="button"
-          className={activeTab === "view" ? "active" : ""}
-          aria-pressed={activeTab === "view"}
-          onClick={() => handleTabChange("view")}
-        >
-          View Hikes
-        </button>
-      </nav>
-
-      {activeTab === "add" && (
-        <HikeForm
-          key={selectedHike?.id ?? "new-hike"}
-          hikeToEdit={selectedHike}
-          onHikeAdded={handleHikeSaved}
-          onCancelEdit={handleCancelEdit}
-        />
-      )}
-
-      {activeTab === "view" && (
+      {!isLoggedIn ? (
+        <div className="auth-container">
+          {showLogin ? (
+            <Login
+              onSwitch={() => setShowLogin(false)}
+              onLoginSuccess={handleLoginSuccess}
+            />
+          ) : (
+            <Register
+              onSwitch={() => setShowLogin(true)}
+            />
+          )}
+        </div>
+      ) : (
         <>
-          <TotalDistance refreshKey={refreshKey} />
+          <div className="app-toolbar">
+            <button
+              type="button"
+              className="logout-button"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          </div>
 
-          <HikeMap refreshKey={refreshKey} />
+          <nav className="app-tabs" aria-label="Main navigation">
+            <button
+              type="button"
+              className={activeTab === "add" ? "active" : ""}
+              aria-pressed={activeTab === "add"}
+              onClick={() => handleTabChange("add")}
+            >
+              {selectedHike ? "Edit Hike" : "Add Hike"}
+            </button>
 
-          <HikeList
-            refreshKey={refreshKey}
-            onEditHike={handleEditHike}
-            onHikeDeleted={handleHikeDeleted}
-          />
+            <button
+              type="button"
+              className={activeTab === "view" ? "active" : ""}
+              aria-pressed={activeTab === "view"}
+              onClick={() => handleTabChange("view")}
+            >
+              View Hikes
+            </button>
+          </nav>
+
+          {activeTab === "add" && (
+            <HikeForm
+              key={selectedHike?.id ?? "new-hike"}
+              hikeToEdit={selectedHike}
+              onHikeAdded={handleHikeSaved}
+              onCancelEdit={handleCancelEdit}
+            />
+          )}
+
+          {activeTab === "view" && (
+            <>
+              <TotalDistance refreshKey={refreshKey} />
+
+              <HikeMap refreshKey={refreshKey} />
+
+              <HikeList
+                refreshKey={refreshKey}
+                onEditHike={handleEditHike}
+                onHikeDeleted={handleHikeDeleted}
+              />
+            </>
+          )}
         </>
       )}
     </div>
   );
 }
-
 export default App;
