@@ -1,3 +1,7 @@
+
+/* Entity class representing a hike in the application. 
+   Each Hike object is mapped to a record in the "hikes" table in the database. 
+   It stores the hike locations, coordinates, date, calculated distance, and creation timestamp. */
 package com.himalaya.hiketracker.entity;
 
 import java.time.LocalDate;
@@ -9,9 +13,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-/* Entity class representing a hike in the application. 
-   Each Hike object is mapped to a record in the "hikes" table in the database. 
-   It stores the hike locations, coordinates, date, calculated distance, and creation timestamp. */
 @Entity
 @Table(name = "hikes")
 public class Hike {
