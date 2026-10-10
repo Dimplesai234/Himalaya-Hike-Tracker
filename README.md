@@ -38,7 +38,12 @@ cd Himalaya-Hike-Tracker
 
 ### 2. Configure MySQL
 
-Create a database named `hike_tracker` and configure your database credentials in the backend's `application.properties` file.
+Configure the database connection using environment variables before starting the backend:
+
+- `DB_USERNAME`: Your MySQL username (defaults to `root`).
+- `DB_PASSWORD`: Your MySQL password.
+
+Create a MySQL database named `hike_tracker` before running the application.
 
 ### 3. Run the backend
 
