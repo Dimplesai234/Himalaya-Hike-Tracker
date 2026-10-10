@@ -1,3 +1,7 @@
+/*
+  Repository interface for performing database operations on hikes.
+  JpaRepository provides built-in CRUD operations for the Hike entity.
+ */
 package com.himalaya.hiketracker.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
