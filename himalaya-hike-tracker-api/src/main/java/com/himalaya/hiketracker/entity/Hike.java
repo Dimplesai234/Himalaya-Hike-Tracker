@@ -9,26 +9,60 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+/* Entity class representing a hike in the application. 
+   Each Hike object is mapped to a record in the "hikes" table in the database. 
+   It stores the hike locations, coordinates, date, calculated distance, and creation timestamp. */
 @Entity
 @Table(name = "hikes")
 public class Hike {
 
+    /* We define unique identifier for each hike.
+      @Id marks this field as the primary key.
+      GenerationType.IDENTITY lets the database generate the ID automatically.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    // Name of the hike's starting location.
     private String startLocation;
+
+    // Name of the hike's ending location.
     private String endLocation;
+
+    // Latitude coordinate of the starting location.
     private Double startLatitude;
+
+    // Longitude coordinate of the starting location.
     private Double startLongitude;
+
+    // Latitude coordinate of the ending location.
     private Double endLatitude;
+
+    // Longitude coordinate of the ending location.
     private Double endLongitude;
+
+    // Date on which the hike took place; may be optional.
     private LocalDate hikeDate;
+
+    // Calculated distance between the start and end coordinates, stored in kilometers.
     private Double distanceKm;
+
+    // Date and time when the hike record was created.
     private LocalDateTime createdAt;
 
+    /*
+      Default constructor required by JPA.
+      It allows the persistence framework to create Hike objects.
+     */
     public Hike() {
-    	
     }
+
+    /*
+      Getter and Setter methods of each component/variable
+      Getter methods retrieve field values.
+      Setter methods update field values.
+     */
     public Long getId() {
         return id;
     }
