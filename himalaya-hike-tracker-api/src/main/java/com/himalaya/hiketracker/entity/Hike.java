@@ -43,7 +43,7 @@ public class Hike {
     // Longitude coordinate of the ending location.
     private Double endLongitude;
 
-    // Date on which the hike took place; may be optional.
+    // Date on which the hike took place.
     private LocalDate hikeDate;
 
     // Calculated distance between the start and end coordinates, stored in kilometers.
