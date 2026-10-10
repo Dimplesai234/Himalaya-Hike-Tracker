@@ -38,18 +38,30 @@ cd Himalaya-Hike-Tracker
 
 ### 2. Configure MySQL
 
-Install and start MySQL.
+1. Install and start MySQL.
+2. Create the database:
 
-Create a database named hike_tracker.
+   ```sql
+   CREATE DATABASE hike_tracker;
+   ```
 
-Set the following environment variables before starting the backend:
+3. Configure the database credentials before starting the backend.
 
-DB_USERNAME: Your MySQL username (defaults to root).
+**Windows PowerShell:**
 
-DB_PASSWORD: Your MySQL password.
+```powershell
+$env:DB_USERNAME = "root"
+$env:DB_PASSWORD = "your_mysql_password"
+```
 
-Make sure these variables are configured before running the Spring Boot application..
+**macOS/Linux:**
 
+```bash
+export DB_USERNAME=root
+export DB_PASSWORD=your_mysql_password
+```
+
+Replace `your_mysql_password` with your own MySQL password. Run the backend in the same terminal where you set these variables.
 ### 3. Run the backend
 
 Navigate to `himalaya-hike-tracker-api` and run:
