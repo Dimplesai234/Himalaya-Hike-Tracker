@@ -172,4 +172,16 @@ function App() {
               {/* List saved hikes and provide edit and delete actions. */}
               <HikeList
                 refreshKey={refreshKey}
-                onEditHike={handleEditH
+                onEditHike={handleEditHike}
+                onHikeDeleted={handleHikeDeleted}
+              />
+            </>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
+// Export App as the root component rendered by the React entry point.
+export default App;
