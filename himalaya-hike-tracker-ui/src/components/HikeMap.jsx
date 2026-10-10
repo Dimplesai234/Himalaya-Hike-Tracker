@@ -1,3 +1,7 @@
+/*
+  HikeMap fetches saved hikes and displays their start and end locations
+  as markers, connected by a line on an interactive Leaflet map.
+ */
 import { useEffect, useState } from "react";
 import {
   MapContainer,
@@ -56,10 +60,6 @@ function MapBounds({ hikes }) {
   return null;
 }
 
-/*
-  HikeMap fetches saved hikes and displays their start and end locations
-  as markers, connected by a line on an interactive Leaflet map.
- */
 function HikeMap({ refreshKey = 0 }) {
   // Stores the hikes retrieved from the backend.
   const [hikes, setHikes] = useState([]);
