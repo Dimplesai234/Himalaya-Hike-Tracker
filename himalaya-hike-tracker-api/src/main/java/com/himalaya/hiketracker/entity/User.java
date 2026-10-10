@@ -1,11 +1,11 @@
-package com.himalaya.hiketracker.entity;
-
-import jakarta.persistence.*;
-
 /*
   Entity class representing a registered user.
   Each User object is mapped to a record in the app_users table.
  */
+package com.himalaya.hiketracker.entity;
+
+import jakarta.persistence.*;
+
 @Entity
 @Table(name = "app_users")
 public class User {
